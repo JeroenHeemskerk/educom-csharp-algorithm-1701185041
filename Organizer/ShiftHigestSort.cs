@@ -5,29 +5,43 @@ namespace Organizer
 {
 	public class ShiftHighestSort
     {
-        private List<int> array = new List<int>();
+        private List<int> List;
 
-        /// <summary>
-        /// Sort an array using the functions below
-        /// </summary>
-        /// <param name="input">The unsorted array</param>
-        /// <returns>The sorted array</returns>
-        public List<int> Sort(List<int> input)
+        public ShiftHighestSort(List<int> list)
         {
-            array = new List<int>(input);
-
-            SortFunction(0, array.Count - 1);
-            return array;
+            List = list;
         }
 
-        /// <summary>
-        /// Sort the array from low to high
-        /// </summary>
-        /// <param name="low">De index within this.array to start with</param>
-        /// <param name="high">De index within this.array to stop with</param>
+        public List<int> Sort()
+        {
+            SortFunction(0, List.Count - 1);
+            return List;
+        }
+
         private void SortFunction(int low, int high)
         {
-            throw new NotImplementedException();
+            bool finished = false;
+            int temp;
+
+            while (!finished)
+            {
+                for (int i = low; i < high; i++)
+                {
+                    if (List[i] > List[i + 1])
+                    {
+                        temp = List[i];
+                        List[i] = List[i + 1];
+                        List[i + 1] = temp;
+                    }
+                }
+
+                if (low == high)
+                {
+                    finished = true;
+                }
+
+                high--;
+            }
         }    
     }
 }

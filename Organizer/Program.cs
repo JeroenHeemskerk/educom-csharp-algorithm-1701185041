@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Organizer
@@ -7,19 +8,72 @@ namespace Organizer
     {
         public static void Main(string[] args)
         {
-            // Press <F5> to run this code, when "Hello World!" appears in a black box, remove the line below and write your code below.
-            Console.WriteLine("Hello World!");
-            ShowList("Example of ShowList", new List<int>() { -33, 3, 2, 2, 3, 34, 34, 32, 1, 3, 5, 3, -22, -99, 33, -22, 11, 3, 33, 12, -2, -21, 4, 34, 22, 15, 34,-22 });
+            List<int> myList;
+            myList = CreateList(10);
+            ShowList("Lijst met willekeurige nummers", myList);
+
+            ShiftHighestSort sorter = new ShiftHighestSort(myList);
+            myList = sorter.Sort();
+            ShowList("Lijst met gesorteerde nummers", myList);
+
+            Console.WriteLine();
+
+            CheckList(myList);
+
+            Console.WriteLine();
+
+            List<int> myOtherList = new List<int> { 4, 5, 2, 1, 6, 3 };
+            RotateSort rotateSort = new RotateSort(myOtherList);
+            myList = rotateSort.Sort();
+            ShowList("De andere lijst", myList);
+
+            Console.WriteLine();
+            CheckList(myList);
+
+        }
+
+        private static void CheckList(List<int> list)
+        {
+            //list.Count wordt met 1 gereduceerd nu amount 1 groter is dan de daadwerkelijke hoeveelheid indexen
+            //De index begint immers op 0
+            int amount = list.Count - 1;
+            bool isListSorted = true;
+
+            for (int i = 0; i < amount; i++) 
+            {
+                if (list[i] > list[i + 1])
+                {
+                    isListSorted = false;
+                    break;
+                }
+            }
+
+            if (isListSorted)
+            {
+                Console.WriteLine("De lijst is correct gesorteerd");
+            }
+            else
+            {
+                Console.WriteLine("De lijst is niet correct gesorteerd");
+            }
+        }
+
+        private static List<int> CreateList(int n)
+        {
+            List<int> tempList = new List<int>();
+            Random random = new Random();
+            int number;
+
+            for (int i = 0; i < n; i++)
+            {
+                number = random.Next(-99, 100);
+                tempList.Add(number);
+            }
+
+            return tempList;
         }
 
 
-        /* Example of a static function */
-
-        /// <summary>
-        /// Show the list in lines of 20 numbers each
-        /// </summary>
-        /// <param name="label">The label for this list</param>
-        /// <param name="theList">The list to show</param>
         public static void ShowList(string label, List<int> theList)
         {
             int count = theList.Count;

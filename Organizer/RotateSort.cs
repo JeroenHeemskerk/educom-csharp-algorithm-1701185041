@@ -3,43 +3,66 @@ using System.Collections.Generic;
 
 namespace Organizer
 {
-	public class RotateSort
-	{
+    public class RotateSort
+    {
 
-        private List<int> array = new List<int>();
+        private List<int> List;
 
-        /// <summary>
-        /// Sort an array using the functions below
-        /// </summary>
-        /// <param name="input">The unsorted array</param>
-        /// <returns>The sorted array</returns>
-        public List<int> Sort(List<int> input)
+        public RotateSort(List<int> list)
         {
-            array = new List<int>(input);
-
-            SortFunction(0, array.Count - 1);
-            return array;
+            List = list;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="low">De index within this.array to start with</param>
-        /// <param name="high">De index within this.array to stop with</param>
-        private void SortFunction(int low, int high)
+        public List<int> Sort()
         {
-            throw new NotImplementedException();
+            SortFunction();
+            return List;
         }
 
-        /// 
-        /// Partition the array in a group 'low' digits (e.a. lower than a choosen pivot) and a group 'high' digits
-        /// </summary>
-        /// <param name="low">De index within this.array to start with</param>
-        /// <param name="high">De index within this.array to stop with</param>
-        /// <returns>The index in the array of the first of the 'high' digits</returns>
+        private void SortFunction()
+        {
+            if (List.Count - 1 <= 1)
+            {
+                return;
+            }
+
+            int splitPoint;
+
+            splitPoint = Partitioning(0, List.Count - 1);
+            Partitioning(0, splitPoint);
+            Partitioning(splitPoint, List.Count - 1);
+        }
+
         private int Partitioning(int low, int high)
         {
-            throw new NotImplementedException();
+            int pivot = (high / 2);
+            int splitPoint = -1;
+            bool finished = false;
+
+            while (!finished)
+            {
+                for (int L = low; L < high; L++)
+                {
+                    if (List[L] > List[pivot])
+                    {                    
+                        for (int H = high; H > L; H--)
+                        {
+                            if (H <= L)
+                            {
+                                splitPoint = L;
+                                finished = true;
+                                break;
+                            }
+                            if (List[H] <= List[pivot])
+                            {
+                                List[L] = List[H];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return splitPoint;
         }
     }
 }

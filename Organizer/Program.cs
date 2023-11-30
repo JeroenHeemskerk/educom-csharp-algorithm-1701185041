@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Organizer
 {
@@ -9,27 +10,16 @@ namespace Organizer
         public static void Main(string[] args)
         {
             List<int> myList;
-            myList = CreateList(10);
+            int size = RequestListSize();
+            myList = CreateList(size);
             ShowList("Lijst met willekeurige nummers", myList);
 
-            ShiftHighestSort sorter = new ShiftHighestSort(myList);
-            myList = sorter.Sort();
-            ShowList("Lijst met gesorteerde nummers", myList);
+            TimeSpan ts;
+            ts = SortAndTime(myList, "shiftHighestSort");
+            Console.WriteLine("Het duurde: " + ts.ToString());
 
-            Console.WriteLine();
-
-            CheckList(myList);
-
-            Console.WriteLine();
-
-            List<int> myOtherList = new List<int> { 4, 5, 2, 1, 6, 3 };
-            RotateSort rotateSort = new RotateSort(myOtherList);
-            myList = rotateSort.Sort();
-            ShowList("De andere lijst", myList);
-
-            Console.WriteLine();
-            CheckList(myList);
-
+            ts = SortAndTime(myList, "rotateSort");
+            Console.WriteLine("Het duurde: " + ts.ToString());
         }
 
         private static void CheckList(List<int> list)
@@ -73,13 +63,19 @@ namespace Organizer
             return tempList;
         }
 
+        private static int RequestListSize()
+        {
+            Console.WriteLine("Geef hieronder aan hoe lang de lijst moet zijn");
+            int listSize = Convert.ToInt32(Console.ReadLine());
+            return listSize;
+        }
 
         public static void ShowList(string label, List<int> theList)
         {
             int count = theList.Count;
-            if (count > 100)
+            if (count > 200)
             {
-                count = 300; // Do not show more than 300 numbers
+                count = 200; // Do not show more than 200 numbers
             }
             Console.WriteLine();
             Console.Write(label);
@@ -93,6 +89,31 @@ namespace Organizer
                 Console.Write(string.Format("{0,3}, ", theList[index]));  // Show each number right aligned within 3 characters, with a comma and a space
             }
             Console.WriteLine();
+        }
+
+        private static TimeSpan SortAndTime(List<int> list, string sortMethod)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+
+            switch (sortMethod)
+            {
+                case "shiftHighestSort":
+                    ShiftHighestSort sorter = new ShiftHighestSort(list);
+                    stopwatch.Start();
+                    list = sorter.Sort();
+                    stopwatch.Stop();
+                    ShowList("Lijst met gesorteerde nummers op basis van ShiftHighgestSort", list);
+                    break;
+                case "rotateSort":
+                    RotateSort rotateSort = new RotateSort(list);
+                    stopwatch.Start();
+                    list = rotateSort.Sort();
+                    stopwatch.Stop();
+                    ShowList("Lijst met gesorteerde nummers op basis van RotateSort", list);
+                    break;
+            }
+            CheckList(list);
+            return stopwatch.Elapsed;
         }
     }
 }

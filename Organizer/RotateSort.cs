@@ -15,54 +15,47 @@ namespace Organizer
 
         public List<int> Sort()
         {
-            SortFunction();
+            SortFunction(0, List.Count - 1);
             return List;
         }
 
-        private void SortFunction()
+        private void SortFunction(int low, int high)
         {
-            if (List.Count - 1 <= 1)
+            if (List.Count <= 1)
             {
                 return;
             }
 
-            int splitPoint;
+            if (low < high)
+            {
+                int splitPoint = Partitioning(low, high);
 
-            splitPoint = Partitioning(0, List.Count - 1);
-            Partitioning(0, splitPoint);
-            Partitioning(splitPoint, List.Count - 1);
+                SortFunction(low, splitPoint - 1);
+                SortFunction(splitPoint + 1, high);
+            }
         }
 
         private int Partitioning(int low, int high)
         {
-            int pivot = (high / 2);
-            int splitPoint = -1;
-            bool finished = false;
+            int pivot = List[high];
+            int i = low - 1;
 
-            while (!finished)
+           for (int j = low; j < high; j++)
             {
-                for (int L = low; L < high; L++)
+                if (List[j] < pivot)
                 {
-                    if (List[L] > List[pivot])
-                    {                    
-                        for (int H = high; H > L; H--)
-                        {
-                            if (H <= L)
-                            {
-                                splitPoint = L;
-                                finished = true;
-                                break;
-                            }
-                            if (List[H] <= List[pivot])
-                            {
-                                List[L] = List[H];
-                                break;
-                            }
-                        }
-                    }
+                    i++;
+
+                    int temp = List[i];
+                    List[i] = List[j];
+                    List[j] = temp;
                 }
             }
-            return splitPoint;
+            int temp1 = List[i + 1];
+            List[i + 1] = List[high];
+            List[high] = temp1;
+
+            return i + 1;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace BornToMove.DAL
 {
-    public class MoveContext: DbContext
+    public class MoveContext : DbContext
     {
         public DbSet<Move> Move { get; set; }
 

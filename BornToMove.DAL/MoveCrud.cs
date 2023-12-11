@@ -5,161 +5,92 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BornToMove;
 
 namespace BornToMove.DAL
 {
-    internal class MoveCrud
+
+    public class MoveCrud
     {
-        public static List<Move> readAllMoves()
+        private MoveContext context;
+
+        public MoveCrud(MoveContext context)
         {
-            List<Move> moves = new List<Move>();
-            string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = BornToMove;Integrated Security=True;";
-            string sqlQuery = "SELECT *" +
-                              "FROM dbo.move;";
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            this.context = context;
+        }
+
+        public void CreateMove(Move move)
+        {
+            try
             {
-                try
-                {
-                    connection.Open();
+                context.Move.Add(move);
+                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+            }
+        }
 
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int id = reader.GetInt32("id");
-                                string name = reader["name"].ToString();
-                                string description = reader["description"].ToString();
-                                int sweatRate = reader.GetInt32("sweatRate");
-                                moves.Add(new Move(id, name, description, sweatRate));
-                            }
-                        }
-                    }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
+        public void DeleteMove(int id)
+        {
+            try
+            {
+                var selectedMove = context.Move
+                    .Where(move => move.id == id)
+                    .FirstOrDefault();
 
+                if (selectedMove != null)
+                {
+                    context.Move.Remove(selectedMove);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+            }
+        }
+        public List<Move> ReadAllMoves()
+        {
+            try
+            {
+                var moves = context.Move.ToList();
                 return moves;
             }
-        }
-
-        public static Move readMoveById(int id)
-        {
-            string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = BornToMove;Integrated Security=True;";
-            string sqlQuery = "SELECT * " +
-                              "FROM dbo.move" +
-                              $"WHERE Id = ({id});";
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            catch (Exception e)
             {
-                try
-                {
-                    connection.Open();
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int id = reader.GetInt32("id");
-                                string name = reader["name"].ToString();
-                                string description = reader["description"].ToString();
-                                int sweatRate = reader.GetInt32("sweatRate");
-                                moves.Add(new Move(id, name, description, sweatRate));
-                            }
-                        }
-                    }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
-
-                return moves;
+                Console.WriteLine($"Exception: {e.Message}");
+                return null;
             }
         }
 
-        public static void CreateMove(Move move)
-        {
-            string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = BornToMove;Integrated Security=True;";
-            string sqlQuery = $"INSERT INTO dbo.move (name, description, sweatRate) VALUES ('{move.name}', '{move.description}', {move.sweatRate})";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+        public Move? ReadMoveById(int id)
+        {            
+            try
             {
-                try
-                {
-                    connection.Open();
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        int rowsAffected = command.ExecuteNonQuery(); //command.ExecuteNonQuery voert daadwerkelijk de query uit. ExecuteNonQuery is voor non select queries.
-
-                        if (rowsAffected > 0)
-                        {
-                            Console.WriteLine($"Nieuwe move succesvol toegevoegd.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Geen move toegevoegd. Misschien is er iets mis gegaan");
-                        }
-                    }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
+            var selectedMove = context.Move
+                .Where(move => move.id == id)
+                .FirstOrDefault();
+            return selectedMove;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+                return null;
             }
         }
 
-        public static void UpdateMove(Move updatedMove)
-        {
-            string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = BornToMove;Integrated Security=True;";
-            string sqlQuery = $"UPDATE dbo.move (name, description, sweatRate) VALUES ('{updatedMove.name}', '{updatedMove.description}', {updatedMove.sweatRate})";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+        public void UpdateMove(Move move)
+        {            
+            try
             {
-                try
-                {
-                    connection.Open();
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        int rowsAffected = command.ExecuteNonQuery(); //command.ExecuteNonQuery voert daadwerkelijk de query uit. ExecuteNonQuery is voor non select queries.
-
-                        if (rowsAffected > 0)
-                        {
-                            Console.WriteLine($"Move succesvol geupdate.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Move niet geupdate. Misschien is er iets mis gegaan");
-                        }
-                    }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception: {e.Message}");
-                }
+                context.Move.Update(move);
+                context.SaveChanges();
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+            }            
 
         }
     }

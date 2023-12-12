@@ -31,7 +31,7 @@ namespace BornToMove
                     choice = GetChoice("Welke move wilt u uitvoeren?", "Geef het id op van de move die u wilt uitvoeren, of een '0' om een eigen move in te voeren.", 0, BuMove.Moves.Count);
                     if (choice == 0)
                     {
-                        string newName = GetUserMoveName("U heeft opgegeven dat u graag een nieuwe 'move' wilt toevoegen. Wat is de naam van uw 'move'?");
+                        string newName = GetUserMoveName("U heeft opgegeven dat u graag een nieuwe 'move' wilt toevoegen. Wat is de naam van uw 'move'?", moveChecker: BuMove);
                         string newDescription = GetUserMoveDescription("Geef een beschrijving van uw 'move'.");
                         int newSweatRate = GetUserMoveSweatRate("Geef een 'Sweatrate' voor uw 'move'. Dit mag een geheel getal zijn van 1 tot en met 5.");
                         BuMove.WriteMove(newName, newDescription, newSweatRate);
@@ -56,12 +56,12 @@ namespace BornToMove
                         Console.WriteLine("Welke 'move' wilt u updaten?");
                         DisplayMoves();
 
-                        int id = GetId();
+                        int id = GetId(BuMove.Moves.Count);
                         Console.WriteLine("De 'move' die u wilt aanpassen is:");
                         BuMove.Moves[id].DisplayMove();
                         Console.WriteLine();
 
-                        string newName = GetUserMoveName("Welke naam wilt u opnemen voor deze 'move'?", BuMove.Moves[id].Name);
+                        string newName = GetUserMoveName("Welke naam wilt u opnemen voor deze 'move'?", BuMove, BuMove.Moves[id].Name);
                         string newDescription = GetUserMoveDescription("Geef een nieuwe beschrijving voor deze 'move'.");
                         int newSweatRate = GetUserMoveSweatRate("Wat is de 'SweatRate' van deze move? Dit mag een geheel getal zijn van 1 tot en met 5.");
                         int realMoveId = BuMove.Moves[id].Id;
@@ -78,7 +78,7 @@ namespace BornToMove
                         Console.WriteLine("Welke 'move' wilt u verwijderen?");
                         DisplayMoves();
 
-                        int id = GetId();
+                        int id = GetId(BuMove.Moves.Count);
                         int realMoveId = BuMove.Moves[id].Id;
                         Console.WriteLine(realMoveId);
                         BuMove.DeleteMove(realMoveId);
@@ -121,8 +121,8 @@ namespace BornToMove
             while (!choiceMade)
             {
                 choice = Console.ReadLine();
-                choice = BuMove.SanitizeInput(choice);
-                choiceMade = BuMove.TestChoiceInput(choice, min, max);
+                choice = ViewUtils.SanitizeInput(choice);
+                choiceMade = ViewUtils.TestChoiceInput(choice, min, max);
 
                 if (!choiceMade)
                 {
@@ -139,7 +139,7 @@ namespace BornToMove
             return convertedChoice;
         }
 
-        private int GetId()
+        private int GetId(int max)
         {
             bool correctInput = false;
             string userIdInput = "";
@@ -150,7 +150,7 @@ namespace BornToMove
                 Console.WriteLine("Geef het id-nummer van de 'move' die u wilt aanpassen.");
                 userIdInput = Console.ReadLine();
                 Console.WriteLine();
-                error = BuMove.CheckMoveId(userIdInput);
+                error = ViewUtils.CheckMoveId(userIdInput, max);
                 if (error != "")
                 {
                     Console.WriteLine(error + " Probeer het opnieuw.");
@@ -178,7 +178,7 @@ namespace BornToMove
 
                 newDescription = Console.ReadLine();
 
-                error = BuMove.CheckUserMoveDescription(newDescription);
+                error = ViewUtils.CheckUserMoveDescription(newDescription);
                 if (error != "")
                 {
                     Console.WriteLine(error + " Probeer het opnieuw.");
@@ -195,7 +195,7 @@ namespace BornToMove
             return newDescription;
         }
 
-        private string GetUserMoveName(string question, string oldName = "")
+        private string GetUserMoveName(string question, IMoveChecker moveChecker, string oldName = "")
         {
             bool newInput;
             string newName = "";
@@ -210,7 +210,7 @@ namespace BornToMove
                     Console.WriteLine("De naam mag twintig letters lang zijn en mag geen speciale tekens of nummers bevatten.");
                     newName = Console.ReadLine();
 
-                    error = BuMove.CheckUserMoveName(newName);
+                    error = ViewUtils.CheckUserMoveName(newName);
 
                     if (error != "")
                     {
@@ -226,11 +226,11 @@ namespace BornToMove
                 //Indien er wordt geupdate wordt een andere functie aangeroepen om na te gaan of de nieuwe naam niet gelijk is aan de naam van andere moves
                 if (oldName == "")
                 {
-                    newInput = BuMove.CheckUniqueUserMoveName(newName);
+                    newInput = moveChecker.CheckUniqueUserMoveName(newName);
                 } 
                 else
                 {
-                    newInput = BuMove.CheckUniqueUserMoveName(newName, oldName);
+                    newInput = moveChecker.CheckUniqueUserMoveName(newName, oldName);
                 }
 
                 if (!newInput)
@@ -255,7 +255,7 @@ namespace BornToMove
             {
                 Console.WriteLine(instruction);
                 newSweatRate = Console.ReadLine();
-                error = BuMove.CheckUserMoveSweatRate(newSweatRate);
+                error = ViewUtils.CheckUserMoveSweatRate(newSweatRate);
                 if (error != "")
                 {
                     Console.WriteLine(error + " Probeer het opnieuw.");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,26 +9,32 @@ namespace BornToMove
 {
     public class Move
     {
-        public int? id { get; }
-        public string name { get; }
-        public string description { get; }
-        public int sweatRate { get; }
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public int SweatRate { get; set; }
 
-        public Move (int? id, string name, string description, int sweatRate)
+        private Move()
         {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.sweatRate = sweatRate;           
+
         }
 
-        public void DisplayMove(bool userChoosingMove)
+        public Move (int id, string name, string description, int sweatRate)
         {
-            Console.WriteLine("Naam: " + name);
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
+            this.SweatRate = sweatRate;          
+        }
+
+        public void DisplayMove(bool userChoosingMove = false)
+        {
+            Console.WriteLine("Naam: " + Name);
             if (!userChoosingMove)
             {
-                Console.WriteLine("Beschrijving: " + description);
-                Console.WriteLine("Sweatrate: " + sweatRate);
+                Console.WriteLine("Beschrijving: " + Description);
+                Console.WriteLine("Sweatrate: " + SweatRate);
             }
             Console.WriteLine();
         }

@@ -8,24 +8,24 @@ namespace BornToMove.Business
 {
     public class BuMove
     {
-        private MoveCrud moveCrud;
-        public List<Move> moves { get; set; }
+        private MoveCrud MoveCrud;
+        public List<Move> Moves { get; set; }
 
         public BuMove(MoveCrud crud)
         {
-            this.moveCrud = crud;
-            List<Move> moves = new List<Move>();
+            MoveCrud = crud;
         }
 
         public string CheckUserMoveName(string newName)
         {
             string error;
-            //De regex laat enkel uppercase letters, lowercase letters en spaties toe
-            Regex regex = new Regex(@"[^a-zA-Z ]");
 
             //newName wordt eerst getrimd en krijgt een hoofdletter
             newName = newName.Trim();
             newName = char.ToUpper(newName[0]) + newName.Substring(1);
+
+            //De regex laat enkel uppercase letters, lowercase letters en spaties toe
+            Regex regex = new Regex(@"[^a-zA-Z ]");
 
             error = TestInput(newName, "De invoer mag enkel letters bevatten.", 20, regex);
 
@@ -34,9 +34,21 @@ namespace BornToMove.Business
 
         public bool CheckUniqueUserMoveName(string newName)
         {
-            foreach (Move move in this.moves)
+            foreach (Move move in Moves)
             {
-                if (move.name == newName)
+                if (move.Name == newName)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool CheckUniqueUserMoveName(string newName, string oldName)
+        {
+            foreach (Move move in Moves)
+            {
+                if (move.Name == newName && move.Name != oldName)
                 {
                     return false;
                 }
@@ -52,6 +64,7 @@ namespace BornToMove.Business
 
             //De regex laat enkel uppercase letters, lowercase letters, punten, komma's en spaties toe
             Regex regex = new Regex(@"[^a-zA-Z0-9., ]");
+
             string error = TestInput(newDescription, "De invoer mag geen speciale karakters of underscores bevatten", 200, regex);
 
             return error;
@@ -59,20 +72,53 @@ namespace BornToMove.Business
 
         public string CheckUserMoveSweatRate(string newSweatRate)
         {
-            string error = TestInput(newSweatRate);
+            string error = TestInputRate(newSweatRate);
             return error;
+        }
+
+        public string CheckMoveId(string userIdInput)
+        {
+            if (string.IsNullOrEmpty(userIdInput))
+            {
+                return "U heeft niets ingevoerd.";
+            }
+
+            int id;
+            if (!int.TryParse(userIdInput, out id))
+            {
+                return "U kunt enkel hele getallen opgeven als id.";
+            }
+            
+            if (id >= 1 && id <= Moves.Count)
+            {
+                return "";
+            } 
+            else
+            {
+                return "Het opgegeven id kan niet worden teruggevonden.";
+            }
+        }
+
+        public void DeleteMove(int id)
+        {
+            MoveCrud.DeleteMove(id);
+        }
+
+        public Move GetMove(int id)
+        {
+            return MoveCrud.ReadMoveById(id);
         }
 
         public void GetMoves()
         {            
-            moves = moveCrud.ReadAllMoves();         
+            Moves = MoveCrud.ReadAllMoves();         
         }
 
         public Move GetRandomMove()
         {
             Random random = new Random();
-            int randomIndex = random.Next(0, moves.Count);
-            return moves[randomIndex];
+            int randomIndex = random.Next(0, Moves.Count);
+            return Moves[randomIndex];
         }
 
         public string SanitizeInput(string input)
@@ -111,7 +157,7 @@ namespace BornToMove.Business
             return "";
         }
 
-        public string TestInput(string rate)
+        public string TestInputRate(string rate)
         {
             if (string.IsNullOrEmpty(rate))
             {
@@ -124,10 +170,18 @@ namespace BornToMove.Business
             return "";
         }
 
+        public void UpdateMove(int id, string newName, string newDescription, int newSweatRate)
+        {
+            Moves[id].Name = newName;
+            Moves[id].Description = newDescription;
+            Moves[id].SweatRate = newSweatRate;
+            MoveCrud.UpdateMove(Moves[id]);
+        }
+
         public void WriteMove(string name, string description, int sweatRate)
         {
-            Move newMove = new Move(null, name, description, sweatRate);
-            moveCrud.CreateMove(newMove);
+            Move newMove = new Move(0, name, description, sweatRate);
+            MoveCrud.CreateMove(newMove);
         }
     }
 }

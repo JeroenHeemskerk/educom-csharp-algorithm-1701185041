@@ -12,19 +12,19 @@ namespace BornToMove.DAL
 
     public class MoveCrud
     {
-        private MoveContext context;
+        private MoveContext Context;
 
         public MoveCrud(MoveContext context)
         {
-            this.context = context;
+            this.Context = context;
         }
 
         public void CreateMove(Move move)
         {
             try
             {
-                context.Move.Add(move);
-                context.SaveChanges();
+                Context.Move.Add(move);
+                Context.SaveChanges();
             }
             catch (Exception e)
             {
@@ -36,13 +36,13 @@ namespace BornToMove.DAL
         {
             try
             {
-                var selectedMove = context.Move
-                    .Where(move => move.id == id)
+                var selectedMove = Context.Move
+                    .Where(move => move.Id == id)
                     .FirstOrDefault();
 
                 if (selectedMove != null)
                 {
-                    context.Move.Remove(selectedMove);
+                    Context.Move.Remove(selectedMove);
                 }
             }
             catch (Exception e)
@@ -54,7 +54,7 @@ namespace BornToMove.DAL
         {
             try
             {
-                var moves = context.Move.ToList();
+                var moves = Context.Move.ToList();
                 return moves;
             }
             catch (Exception e)
@@ -68,8 +68,8 @@ namespace BornToMove.DAL
         {            
             try
             {
-            var selectedMove = context.Move
-                .Where(move => move.id == id)
+            var selectedMove = Context.Move
+                .Where(move => move.Id == id)
                 .FirstOrDefault();
             return selectedMove;
             }
@@ -84,8 +84,8 @@ namespace BornToMove.DAL
         {            
             try
             {
-                context.Move.Update(move);
-                context.SaveChanges();
+                Context.Move.Update(move);
+                Context.SaveChanges();
             }
             catch (Exception e)
             {

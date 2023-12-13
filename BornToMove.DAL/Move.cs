@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BornToMove
+namespace BornToMove.DAL
 {
     public class Move
     {
@@ -14,6 +14,7 @@ namespace BornToMove
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public int SweatRate { get; set; }
+        virtual public ICollection<MoveRating> Ratings { get; set; }
 
         private Move()
         {

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BornToMove;
+using Microsoft.EntityFrameworkCore;
 
 namespace BornToMove.DAL
 {
-
     public class MoveCrud
     {
         private MoveContext Context;
@@ -54,7 +54,7 @@ namespace BornToMove.DAL
         {
             try
             {
-                var moves = Context.Move.ToList();
+                var moves = Context.Move.Include(m => m.Ratings).ToList();
                 return moves;
             }
             catch (Exception e)

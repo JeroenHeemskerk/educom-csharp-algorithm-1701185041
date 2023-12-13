@@ -50,6 +50,11 @@ namespace BornToMove.Business
             return MoveCrud.ReadMoveById(id);
         }
 
+        public string GetMoveName(int id)
+        {
+            return Moves[id].Name;
+        }
+
         public void GetMoves()
         {            
             Moves = MoveCrud.ReadAllMoves();         
@@ -57,10 +62,16 @@ namespace BornToMove.Business
 
         public Move GetRandomMove()
         {
+            GetMoves();
             Random random = new Random();
             int randomIndex = random.Next(0, Moves.Count);
             return Moves[randomIndex];
-        }       
+        }
+        
+        public int GetRealMoveId(int id)
+        {
+            return Moves[id].Id;
+        }
 
         public void UpdateMove(int id, string newName, string newDescription, int newSweatRate)
         {

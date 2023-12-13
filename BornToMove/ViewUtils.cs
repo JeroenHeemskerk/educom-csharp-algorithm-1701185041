@@ -11,25 +11,15 @@ namespace BornToMove
     {
         public static string CheckUserMoveName(string newName)
         {
-            string error;
-
-            //newName wordt eerst getrimd en krijgt een hoofdletter
-            newName = newName.Trim();
-            newName = char.ToUpper(newName[0]) + newName.Substring(1);
-
             //De regex laat enkel uppercase letters, lowercase letters en spaties toe
             Regex regex = new Regex(@"[^a-zA-Z ]");
 
-            error = TestInput(newName, "De invoer mag enkel letters bevatten.", 20, regex);
+            string error = TestInput(newName, "De invoer mag enkel letters bevatten.", 20, regex);
 
             return error;
         }
         public static string CheckUserMoveDescription(string newDescription)
         {
-            //newDescription wordt eerst getrimd en krijgt een hoofdletter
-            newDescription = newDescription.Trim();
-            newDescription = char.ToUpper(newDescription[0]) + newDescription.Substring(1);
-
             //De regex laat enkel uppercase letters, lowercase letters, punten, komma's en spaties toe
             Regex regex = new Regex(@"[^a-zA-Z0-9., ]");
 

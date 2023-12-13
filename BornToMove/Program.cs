@@ -16,7 +16,8 @@ namespace BornToMove.Index
             MoveCrud moveCrud = new MoveCrud(context);
             BuMove buMove = new BuMove(moveCrud);
             View view = new View(buMove);
-            view.StartProgram();
+            Presenter presenter = new Presenter(view);
+            presenter.StartProgram();
         }
     }
 }

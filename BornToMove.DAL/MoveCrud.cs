@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BornToMove;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BornToMove.DAL
 {
@@ -17,6 +18,7 @@ namespace BornToMove.DAL
         public MoveCrud(MoveContext context)
         {
             this.Context = context;
+            context.CreateTableMoveIfTableMoveIsEmpty();
         }
 
         public void CreateMove(Move move)
@@ -90,8 +92,7 @@ namespace BornToMove.DAL
             catch (Exception e)
             {
                 Console.WriteLine($"Exception: {e.Message}");
-            }            
-
+            }
         }
     }
 }

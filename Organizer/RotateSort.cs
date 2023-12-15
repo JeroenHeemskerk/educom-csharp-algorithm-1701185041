@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace Organizer
 {
-    public class RotateSort
+    public class RotateSort<T>
     {
 
-        private List<int> List;
+        private List<T> List;
+        private IComparer<T> Comparer;
 
-        public RotateSort(List<int> list)
+        public RotateSort(List<T> list, IComparer<T> comparer)
         {
             List = list;
+            Comparer = comparer;
         }
 
-        public List<int> Sort()
+        public List<T> Sort()
         {
             SortFunction(0, List.Count - 1);
             return List;
@@ -37,21 +39,21 @@ namespace Organizer
 
         private int Partitioning(int low, int high)
         {
-            int pivot = List[high];
+            T pivot = List[high];
             int i = low - 1;
 
            for (int j = low; j < high; j++)
             {
-                if (List[j] < pivot)
+                if (Comparer.Compare(List[j], pivot) < 0)
                 {
                     i++;
 
-                    int temp = List[i];
+                    T temp = List[i];
                     List[i] = List[j];
                     List[j] = temp;
                 }
             }
-            int temp1 = List[i + 1];
+            T temp1 = List[i + 1];
             List[i + 1] = List[high];
             List[high] = temp1;
 

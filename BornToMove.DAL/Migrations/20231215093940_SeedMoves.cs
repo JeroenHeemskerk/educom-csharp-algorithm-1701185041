@@ -7,7 +7,7 @@
 namespace BornToMove.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class SeededMoves : Migration
+    public partial class SeedMoves : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

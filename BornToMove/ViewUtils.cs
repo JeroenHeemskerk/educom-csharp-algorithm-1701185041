@@ -76,17 +76,20 @@ namespace BornToMove
             }
         }
 
-        public static string TestInput(string name, string error, int maxChars, Regex regex)
+        public static string TestInput(string input, string error, int maxChars, Regex regex)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(input))
             {
                 return "U heeft niets ingevoerd.";
             }
-            if (regex.IsMatch(name))
+
+            input = input.Trim();
+            input = char.ToUpper(input[0]) + input.Substring(1);
+            if (regex.IsMatch(input))
             {
                 return error;
             }
-            if (name.Length > maxChars)
+            if (input.Length > maxChars)
             {
                 return "De opgegeven invoer is te lang.";
             }

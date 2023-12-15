@@ -16,7 +16,7 @@ namespace BornToMove.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(400)", nullable: false),
                     SweatRate = table.Column<int>(type: "int", nullable: false)
                 },
@@ -26,7 +26,7 @@ namespace BornToMove.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoveRatings",
+                name: "MoveRating",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,9 +37,9 @@ namespace BornToMove.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoveRatings", x => x.Id);
+                    table.PrimaryKey("PK_MoveRating", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MoveRatings_Move_MoveId",
+                        name: "FK_MoveRating_Move_MoveId",
                         column: x => x.MoveId,
                         principalTable: "Move",
                         principalColumn: "Id",
@@ -47,8 +47,8 @@ namespace BornToMove.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoveRatings_MoveId",
-                table: "MoveRatings",
+                name: "IX_MoveRating_MoveId",
+                table: "MoveRating",
                 column: "MoveId");
         }
 
@@ -56,7 +56,7 @@ namespace BornToMove.DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MoveRatings");
+                name: "MoveRating");
 
             migrationBuilder.DropTable(
                 name: "Move");

@@ -37,7 +37,6 @@ namespace BornToMove.DAL
                 Console.WriteLine("Beschrijving: " + Description);
                 Console.WriteLine("Sweatrate: " + SweatRate);
             }
-            Console.WriteLine();
         }
     }
 }

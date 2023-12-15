@@ -3,6 +3,7 @@ using BornToMove.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BornToMove.DAL.Migrations
 {
     [DbContext(typeof(MoveContext))]
-    partial class MoveContextModelSnapshot : ModelSnapshot
+    [Migration("20231215093847_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,29 +46,6 @@ namespace BornToMove.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Move");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Ga horizontaal liggen op teentoppen en handen. Laat het lijf langzaam zakken tot de neus de grond bijna raakt. Duw het lijf terug nu omhoog tot de ellebogen bijna gestrekt zijn. Vervolgens weer laten zakken. Doe dit 20 keer zonder tussenpauzes.",
-                            Name = "Push up",
-                            SweatRate = 3
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Ga horizontaal liggen op teentoppen en onderarmen. Houdt deze positie 1 minuut vast.",
-                            Name = "Planking",
-                            SweatRate = 3
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Ga staan met gestrekte armen. Zak door de knieën tot de billen de grond bijna raken. Ga weer volledig gestrekt staan. Herhaal dit 20 keer zonder tussenpauzes.",
-                            Name = "Squat",
-                            SweatRate = 5
-                        });
                 });
 
             modelBuilder.Entity("BornToMove.DAL.MoveRating", b =>
@@ -76,13 +56,13 @@ namespace BornToMove.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Intensity")
-                        .HasColumnType("float");
-
                     b.Property<int>("MoveId")
                         .HasColumnType("int");
 
                     b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Vote")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -90,36 +70,6 @@ namespace BornToMove.DAL.Migrations
                     b.HasIndex("MoveId");
 
                     b.ToTable("MoveRating");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Intensity = 5.0,
-                            MoveId = 1,
-                            Rating = 5.0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Intensity = 4.0,
-                            MoveId = 2,
-                            Rating = 4.0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Intensity = 3.0,
-                            MoveId = 3,
-                            Rating = 5.0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Intensity = 5.0,
-                            MoveId = 1,
-                            Rating = 1.0
-                        });
                 });
 
             modelBuilder.Entity("BornToMove.DAL.MoveRating", b =>

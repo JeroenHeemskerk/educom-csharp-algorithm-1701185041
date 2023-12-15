@@ -27,19 +27,19 @@ namespace BornToMove
 
         public void DisplayChosenMove(int id)
         {
-            //De lijst met moves is eerder in hetzelfde pad in BuMove gezet waardoor deze niet nogmaals gecreëerd hoeft te worden
-            BuMove.Moves[id].DisplayMove();
+            BuMove.SetCurrentMove(id);
+            BuMove.CurrentMove.DisplayMove();
+            BuMove.MoveRatings[id].DisplayRating();
         }
 
         public void DisplayMoves()
         {
-            BuMove.GetMoves();
-            int id = 1;
-            foreach (Move move in BuMove.Moves)
+            BuMove.GetMoveRatings();
+            foreach (var moveAndRatings in BuMove.MoveRatings)
             {
-                Console.WriteLine("Id: " + id);
-                move.DisplayMove(true);
-                id++;
+                Console.WriteLine("Id: " + moveAndRatings.Key);
+                moveAndRatings.Value.Move.DisplayMove(true);
+                moveAndRatings.Value.DisplayRating();
             }
         }
 
@@ -58,10 +58,11 @@ namespace BornToMove
 
         public void DisplayRandomMove()
         {
-            Move randomMove = BuMove.GetRandomMove();
+            MoveRating randomMoveRating = BuMove.GetRandomMove();
             Console.WriteLine("De volgende move hebben wij voor u geselecteerd:");
             Console.WriteLine();
-            randomMove.DisplayMove();
+            randomMoveRating.Move.DisplayMove();
+            randomMoveRating.DisplayRating();
             Console.WriteLine("Veel plezier!");
             Console.WriteLine();
         }
@@ -78,7 +79,7 @@ namespace BornToMove
 
         public void DisplayThanksForNewMove()
         {
-            Console.WriteLine("Dankuwel voor uw nieuwe 'move'. Uw 'move' is nu te vinden in deze applicatie!");
+            Console.WriteLine("Dankuwel voor uw nieuwe 'move'. Uw 'move' zal na beoordeling van onze experts mogelijk in de toekomst terug te vinden in deze applicatie!");
         }
 
         public void DisplayUpdatedMove(int realMoveId)
@@ -146,7 +147,7 @@ namespace BornToMove
 
         public int GetMaximumMoves()
         {
-            return BuMove.Moves.Count;
+            return BuMove.MoveRatings.Count;
         }
 
         public string GetUserMoveDescription(string instruction)
@@ -161,11 +162,8 @@ namespace BornToMove
                 Console.WriteLine("De beschrijving mag maximaal 200 karakters lang zijn en mag geen speciale karakters of underscores bevatten");
                 newDescription = Console.ReadLine();
 
-                //newDescription wordt eerst getrimd en krijgt een hoofdletter
-                newDescription = newDescription.Trim();
-                newDescription = char.ToUpper(newDescription[0]) + newDescription.Substring(1);
-
                 error = ViewUtils.CheckUserMoveDescription(newDescription);
+
                 if (error != "")
                 {
                     Console.WriteLine(error + " Probeer het opnieuw.");
@@ -196,10 +194,6 @@ namespace BornToMove
                     Console.WriteLine(question);
                     Console.WriteLine("De naam mag twintig letters lang zijn en mag geen speciale tekens of nummers bevatten.");
                     newName = Console.ReadLine();
-
-                    //newName wordt eerst getrimd en krijgt een hoofdletter
-                    newName = newName.Trim();
-                    newName = char.ToUpper(newName[0]) + newName.Substring(1);
 
                     error = ViewUtils.CheckUserMoveName(newName);
 
@@ -263,24 +257,31 @@ namespace BornToMove
             return sweatRate;
         }
 
-        public void GetRatings()
+        public void HandleRatings()
         {
-            int rating, intensityRating;
-            rating = GetChoice("Hoe vond u deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
-            intensityRating = GetChoice("Hoe intens was deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
+            double rating = GetChoice("Hoe vond u deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
+            double intensityRating = GetChoice("Hoe intens was deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
+            BuMove.WriteMoveRating(rating, intensityRating);
             Console.WriteLine("U gaf deze oefening een rating van: " + rating + " en een intensiteitsrating van: " + intensityRating + ".");
+            Console.WriteLine("Dankuwel voor uw input!");
         }
 
-        public void HandleUserInput()
+        public void HandleUserInputForCreatingMove()
         {
+            //Moves worden opgehaald uit de database om te kunnen controleren op nieuwe input
+            BuMove.GetMoves();
+
             string newName = GetUserMoveName("U heeft opgegeven dat u graag een nieuwe 'move' wilt toevoegen. Wat is de naam van uw 'move'?", moveChecker: BuMove);
             string newDescription = GetUserMoveDescription("Geef een beschrijving van uw 'move'.");
             int newSweatRate = GetUserMoveSweatRate("Geef een 'Sweatrate' voor uw 'move'. Dit mag een geheel getal zijn van 1 tot en met 5.");
             BuMove.WriteMove(newName, newDescription, newSweatRate);
         }
 
-        public int HandleUserInput(int id)
+        public int HandleUserInputForUpdatingMove(int id)
         {
+            //Moves worden opgehaald uit de database om te kunnen controleren op nieuwe input
+            BuMove.GetMoves();
+
             string newName = GetUserMoveName("Welke naam wilt u opnemen voor deze 'move'?", BuMove, BuMove.Moves[id].Name);
             string newDescription = GetUserMoveDescription("Geef een nieuwe beschrijving voor deze 'move'.");
             int newSweatRate = GetUserMoveSweatRate("Wat is de 'SweatRate' van deze move? Dit mag een geheel getal zijn van 1 tot en met 5.");

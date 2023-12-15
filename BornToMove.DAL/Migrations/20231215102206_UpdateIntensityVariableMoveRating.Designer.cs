@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BornToMove.DAL.Migrations
 {
     [DbContext(typeof(MoveContext))]
-    [Migration("20231213151024_SeededMoves")]
-    partial class SeededMoves
+    [Migration("20231215102206_UpdateIntensityVariableMoveRating")]
+    partial class UpdateIntensityVariableMoveRating
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,20 +79,20 @@ namespace BornToMove.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("Intensity")
+                        .HasColumnType("float");
+
                     b.Property<int>("MoveId")
                         .HasColumnType("int");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
-                    b.Property<double>("Vote")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MoveId");
 
-                    b.ToTable("MoveRatings");
+                    b.ToTable("MoveRating");
                 });
 
             modelBuilder.Entity("BornToMove.DAL.MoveRating", b =>

@@ -10,6 +10,10 @@ namespace BornToMove.Business
     {
         private MoveCrud MoveCrud;
         public List<Move> Moves { get; set; }
+        public Dictionary<int, MoveRating> MoveRatings { get; set; }
+        public Move CurrentMove { get; set; }
+
+        private MoveRating MoveRating;
 
         public BuMove(MoveCrud crud)
         {
@@ -55,22 +59,33 @@ namespace BornToMove.Business
             return Moves[id].Name;
         }
 
+        public void GetMoveRatings()
+        {
+            MoveRatings = MoveCrud.ReadAllAverageRatings();
+        }
+
         public void GetMoves()
         {            
             Moves = MoveCrud.ReadAllMoves();         
         }
 
-        public Move GetRandomMove()
+        public MoveRating GetRandomMove()
         {
-            GetMoves();
+            GetMoveRatings();
             Random random = new Random();
-            int randomIndex = random.Next(0, Moves.Count);
-            return Moves[randomIndex];
+            int randomIndex = random.Next(0, MoveRatings.Count);
+            SetCurrentMove(randomIndex);
+            return MoveRatings[randomIndex];
         }
         
         public int GetRealMoveId(int id)
         {
             return Moves[id].Id;
+        }
+
+        public void SetCurrentMove(int index)
+        {
+            CurrentMove = MoveRatings[index].Move;
         }
 
         public void UpdateMove(int id, string newName, string newDescription, int newSweatRate)
@@ -85,6 +100,12 @@ namespace BornToMove.Business
         {
             Move newMove = new Move(0, name, description, sweatRate);
             MoveCrud.CreateMove(newMove);
+        }
+
+        public void WriteMoveRating(double rating, double intensityRating)
+        {
+            MoveRating = new MoveRating(0, CurrentMove, rating, intensityRating);
+            MoveCrud.CreateMoveRating(MoveRating);
         }
     }
 }

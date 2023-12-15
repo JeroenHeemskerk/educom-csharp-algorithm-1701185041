@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BornToMove.DAL.Migrations
 {
     [DbContext(typeof(MoveContext))]
-    [Migration("20231213144355_initial")]
-    partial class initial
+    [Migration("20231215093940_SeedMoves")]
+    partial class SeedMoves
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,29 @@ namespace BornToMove.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Move");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Ga horizontaal liggen op teentoppen en handen. Laat het lijf langzaam zakken tot de neus de grond bijna raakt. Duw het lijf terug nu omhoog tot de ellebogen bijna gestrekt zijn. Vervolgens weer laten zakken. Doe dit 20 keer zonder tussenpauzes.",
+                            Name = "Push up",
+                            SweatRate = 3
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Ga horizontaal liggen op teentoppen en onderarmen. Houdt deze positie 1 minuut vast.",
+                            Name = "Planking",
+                            SweatRate = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Ga staan met gestrekte armen. Zak door de knieën tot de billen de grond bijna raken. Ga weer volledig gestrekt staan. Herhaal dit 20 keer zonder tussenpauzes.",
+                            Name = "Squat",
+                            SweatRate = 5
+                        });
                 });
 
             modelBuilder.Entity("BornToMove.DAL.MoveRating", b =>
@@ -69,7 +92,7 @@ namespace BornToMove.DAL.Migrations
 
                     b.HasIndex("MoveId");
 
-                    b.ToTable("MoveRatings");
+                    b.ToTable("MoveRating");
                 });
 
             modelBuilder.Entity("BornToMove.DAL.MoveRating", b =>

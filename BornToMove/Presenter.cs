@@ -28,19 +28,19 @@ namespace BornToMove
                     choice = View.GetChoice("Welke move wilt u uitvoeren?", "Geef het id op van de move die u wilt uitvoeren, of een '0' om een eigen move in te voeren.", 0, View.GetMaximumMoves());
                     if (choice == 0)
                     {
-                        View.HandleUserInput();
+                        View.HandleUserInputForCreatingMove();
                         View.DisplayThanksForNewMove();
                     }
                     else
                     {
                         choice -= 1;
                         View.DisplayChosenMove(choice);
-                        View.GetRatings();
+                        View.HandleRatings();
                     }
                     break;
                 case 2:
                     View.DisplayRandomMove();
-                    View.GetRatings();
+                    View.HandleRatings();
                     break;
                 case 3:
                     Console.WriteLine();
@@ -53,7 +53,7 @@ namespace BornToMove
                         int id = View.GetId("Geef het id-nummer van de 'move' die u wilt aanpassen.");
                         View.DisplayMoveToUpdate(id);
 
-                        int realMoveId = View.HandleUserInput(id);
+                        int realMoveId = View.HandleUserInputForUpdatingMove(id);
                         View.DisplayUpdatedMove(realMoveId);
                     }
                     else if (choice == 2)

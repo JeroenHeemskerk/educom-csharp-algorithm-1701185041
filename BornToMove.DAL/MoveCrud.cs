@@ -17,8 +17,8 @@ namespace BornToMove.DAL
 
         public MoveCrud(MoveContext context)
         {
-            this.Context = context;
-            context.CreateTableMoveIfTableMoveIsEmpty();
+            Context = context;
+            context.ApplyMigrations();
         }
 
         public void CreateMove(Move move)
@@ -26,6 +26,19 @@ namespace BornToMove.DAL
             try
             {
                 Context.Move.Add(move);
+                Context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+            }
+        }
+
+        public void CreateMoveRating(MoveRating moveRating)
+        {
+            try
+            {
+                Context.MoveRating.Add(moveRating);
                 Context.SaveChanges();
             }
             catch (Exception e)
@@ -52,12 +65,38 @@ namespace BornToMove.DAL
                 Console.WriteLine($"Exception: {e.Message}");
             }
         }
-        public List<Move> ReadAllMoves()
+        public List<Move>? ReadAllMoves()
         {
             try
             {
-                var moves = Context.Move.Include(m => m.Ratings).ToList();
+                var moves = Context.Move.ToList();
                 return moves;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e.Message}");
+                return null;
+            }
+        }
+
+        public Dictionary<int, MoveRating>? ReadAllAverageRatings() 
+        {
+            try
+            {
+                var moves = Context.Move.ToList();
+
+                var moveRatings = Context.MoveRating
+                    .GroupBy(moveRating => moveRating.Move.Id)
+                    
+                    //Een dictionary wordt gemaakt om het Id van de move te koppelen aan de daadwerkelijke move en rating
+                    .ToDictionary(
+                        moveGroup => moveGroup.Key, //De .key van de movegroup is door de groupby de Id van de move
+                        moveGroup => new MoveRating
+                        { 
+                            Move = moves.FirstOrDefault(Move => Move.Id == moveGroup.Key), //Hier wordt de move uit moves gezet die bij de Id hoort
+                            Rating = moveGroup.Average(moveRating => moveRating.Rating), //Er wordt vervolgens een gemiddelde genomen van de ratings binnen deze groep
+                        });
+                return moveRatings;
             }
             catch (Exception e)
             {

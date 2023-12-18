@@ -107,5 +107,11 @@ namespace BornToMove.Business
             MoveRating = new MoveRating(0, CurrentMove, rating, intensityRating);
             MoveCrud.CreateMoveRating(MoveRating);
         }
+
+        public void WriteMoveRating(Move newMove, double rating, double intensityRating)
+        {
+            MoveRating = new MoveRating(0, newMove, rating, intensityRating);
+            MoveCrud.CreateMoveRating(MoveRating);
+        }
     }
 }

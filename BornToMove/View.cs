@@ -274,7 +274,10 @@ namespace BornToMove
             string newName = GetUserMoveName("U heeft opgegeven dat u graag een nieuwe 'move' wilt toevoegen. Wat is de naam van uw 'move'?", moveChecker: BuMove);
             string newDescription = GetUserMoveDescription("Geef een beschrijving van uw 'move'.");
             int newSweatRate = GetUserMoveSweatRate("Geef een 'Sweatrate' voor uw 'move'. Dit mag een geheel getal zijn van 1 tot en met 5.");
-            BuMove.WriteMove(newName, newDescription, newSweatRate);
+            Move newMove = new Move(0, newName, newDescription, newSweatRate);
+            double newRating = GetChoice("Hoe vond u deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
+            double newIntensityRating = GetChoice("Hoe intens was deze oefening?", "Vul een rating in van '1' tot en met '5'", 1, 5);
+            BuMove.WriteMoveRating(newMove, newRating, newIntensityRating);
         }
 
         public int HandleUserInputForUpdatingMove(int id)

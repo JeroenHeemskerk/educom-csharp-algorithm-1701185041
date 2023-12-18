@@ -9,14 +9,10 @@ namespace Organizer
         private List<T> List;
         private IComparer<T> Comparer;
 
-        public RotateSort(List<T> list, IComparer<T> comparer)
+        public List<T> Sort(List<T> list, IComparer<T> comparer)
         {
             List = list;
             Comparer = comparer;
-        }
-
-        public List<T> Sort()
-        {
             SortFunction(0, List.Count - 1);
             return List;
         }

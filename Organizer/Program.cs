@@ -105,9 +105,9 @@ namespace Organizer
                     ShowList("Lijst met gesorteerde nummers op basis van ShiftHighgestSort", list);
                     break;
                 case "rotateSort":
-                    RotateSort rotateSort = new RotateSort(list);
+                    RotateSort<int> rotateSort = new RotateSort<int>();
                     stopwatch.Start();
-                    list = rotateSort.Sort();
+                    list = rotateSort.Sort(list, Comparer<int>.Default);
                     stopwatch.Stop();
                     ShowList("Lijst met gesorteerde nummers op basis van RotateSort", list);
                     break;

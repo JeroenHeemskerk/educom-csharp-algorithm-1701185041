@@ -79,23 +79,19 @@ namespace BornToMove.DAL
             }
         }
 
-        public Dictionary<int, MoveRating>? ReadAllAverageRatings() 
+        public List<MoveRating> ReadAllAverageRatings()
         {
             try
             {
-                var moves = Context.Move.ToList();
-
                 var moveRatings = Context.MoveRating
-                    .GroupBy(moveRating => moveRating.Move.Id)
-                    
-                    //Een dictionary wordt gemaakt om het Id van de move te koppelen aan de daadwerkelijke move en rating
-                    .ToDictionary(
-                        moveGroup => moveGroup.Key, //De .key van de movegroup is door de groupby de Id van de move
-                        moveGroup => new MoveRating
-                        { 
-                            Move = moves.FirstOrDefault(Move => Move.Id == moveGroup.Key), //Hier wordt de move uit moves gezet die bij de Id hoort
-                            Rating = moveGroup.Average(moveRating => moveRating.Rating), //Er wordt vervolgens een gemiddelde genomen van de ratings binnen deze groep
-                        });
+                    .GroupBy(MoveRating => MoveRating.Move.Id)
+                    .Select(group => new MoveRating
+                    {
+                        Id = group.Key,
+                        Move = group.First().Move,
+                        Rating = (int)group.Average(moveRating => moveRating.Rating)
+                    })
+                    .ToList();
                 return moveRatings;
             }
             catch (Exception e)

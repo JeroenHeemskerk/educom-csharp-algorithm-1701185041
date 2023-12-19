@@ -3,14 +3,19 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using BornToMove.DAL;
+using Organizer;
+using BornToMove.DAL.Migrations;
 
 namespace BornToMove.Business
 {
     public class BuMove : IMoveChecker
     {
         private MoveCrud MoveCrud;
+
+        private RotateSort<MoveRating> Sorter;
         public List<Move> Moves { get; set; }
-        public Dictionary<int, MoveRating> MoveRatings { get; set; }
+        public List<MoveRating> MoveRatings { get; set; }
+
         public Move CurrentMove { get; set; }
 
         private MoveRating MoveRating;
@@ -18,7 +23,13 @@ namespace BornToMove.Business
         public BuMove(MoveCrud crud)
         {
             MoveCrud = crud;
-        }        
+            Sorter = new RotateSort<MoveRating>();
+        }
+        
+        public void CallDisplayMove(int id)
+        {
+            MoveRatings.First(moveRating => moveRating.Id == id).Move.DisplayMove();
+        }
 
         public bool CheckUniqueUserMoveName(string newName)
         {
@@ -56,12 +67,13 @@ namespace BornToMove.Business
 
         public string GetMoveName(int id)
         {
-            return Moves[id].Name;
+            return MoveRatings.First(moveRating => moveRating.Id == id).Move.Name;
         }
 
         public void GetMoveRatings()
         {
             MoveRatings = MoveCrud.ReadAllAverageRatings();
+            MoveRatings = Sorter.Sort(MoveRatings, new RatingsConverter());
         }
 
         public void GetMoves()
@@ -90,10 +102,11 @@ namespace BornToMove.Business
 
         public void UpdateMove(int id, string newName, string newDescription, int newSweatRate)
         {
-            Moves[id].Name = newName;
-            Moves[id].Description = newDescription;
-            Moves[id].SweatRate = newSweatRate;
-            MoveCrud.UpdateMove(Moves[id]);
+            Move move = MoveRatings.First(moveRating => moveRating.Id == id).Move;
+            move.Name = newName;
+            move.Description = newDescription;
+            move.SweatRate = newSweatRate;
+            MoveCrud.UpdateMove(move);
         }
 
         public void WriteMove(string name, string description, int sweatRate)

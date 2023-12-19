@@ -35,15 +35,14 @@ namespace BornToMove
                     {
                         choice -= 1;
                         View.DisplayChosenMove(choice);
-                        View.HandleRatings();
+                        View.HandleUserRatingInput();
                     }
                     break;
                 case 2:
                     View.DisplayRandomMove();
-                    View.HandleRatings();
+                    View.HandleUserRatingInput();
                     break;
                 case 3:
-                    Console.WriteLine();
                     choice = View.GetChoice("U heeft gekozen voor meer opties.", "Typ 1 om een 'move' te updaten of 2 om een 'move' te verwijderen.", 1, 2);
                     if (choice == 1)
                     {

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BornToMove.DAL\BornToMove.DAL.csproj" />
+    <ProjectReference Include="..\Organizer\Organizer.csproj" />
   </ItemGroup>
 
 </Project>
